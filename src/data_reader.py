@@ -1,6 +1,7 @@
 import csv
 from graph import Graph
-from typing import Dict, Set
+from node import Node
+from typing import Dict, Set, Callable
 
 # CSV input will have a names column on the left for the name of the dance, and then a column for each dancer.
 # ex: name, alice, bob, charlie
@@ -31,7 +32,7 @@ def read_csv(filepath: str) -> Dict[str, Set[str]]:
 
     return dance_data
   
-def load_graph(filepath: str) -> Graph:
+def load_graph(filepath: str, weight_fcn: Callable[[Node, Node], float]) -> Graph:
   dance_data = read_csv(filepath)
   
   graph = Graph()
@@ -40,10 +41,11 @@ def load_graph(filepath: str) -> Graph:
   for dance in dance_data:
     graph.add_node(dance, dance_data[dance])
   
-  # Add valid edges
+  # Add initial edges with weight 0
   for dance1 in dance_data:
     for dance2 in dance_data:
-      if dance1 != dance2 and not dance_data[dance1].intersection(dance_data[dance2]):
-        graph.add_edge(dance1, dance_data[dance1], dance2, dance_data[dance2])
+      if dance1 != dance2:
+        weight = weight_fcn(graph.nodes[dance1], graph.nodes[dance2])
+        graph.add_edge(dance1, dance_data[dance1], dance2, dance_data[dance2], weight)
   
   return graph
