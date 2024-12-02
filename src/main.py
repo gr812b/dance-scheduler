@@ -1,6 +1,6 @@
-from Graph import Graph
-from Node import Node
-from Read_Csv import read_csv
+from graph import Graph
+from node import Node
+from src.data_reader import read_csv
 
 def main():
   # Read in the csv file

@@ -1,5 +1,5 @@
 class Node:
-  def __init__(self, name, dancers):
+  def __init__(self, name: str, dancers: set):
     self.name = name
     self.dancers = dancers
     self.edges = []
@@ -16,7 +16,7 @@ class Node:
     return self.name
   
   def __repr__(self):
-    return self.name
+    return f"Node({self.name})"
   
   def __eq__(self, other):
     return self.name == other.name

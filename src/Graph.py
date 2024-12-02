@@ -1,15 +1,16 @@
-from Node import Node
+from node import Node
+from typing import Dict
 
 class Graph:
   def __init__(self):
-    self.nodes = {}
+    self.nodes: Dict[str, Node] = {}
 
-  def add_node(self, name, dancers):
+  def add_node(self, name: str, dancers: set):
     if name not in self.nodes:
       self.nodes[name] = Node(name, dancers)
     return self.nodes[name]
 
-  def add_edge(self, name1, dancers1, name2, dancers2):
+  def add_edge(self, name1: str, dancers1: set, name2: str, dancers2: set):
     if name1 not in self.nodes:
       self.add_node(name1, dancers1)
     if name2 not in self.nodes:
@@ -20,24 +21,5 @@ class Graph:
     node1.add_edge(node2)
     node2.add_edge(node1)
 
-  def connected_components(self):
-    visited = set()
-    components = []
-
-    def dfs(node, component):
-      visited.add(node)
-      component.append(node)
-      for neighbor in node.edges:
-        if neighbor not in visited:
-          dfs(neighbor, component)
-
-    for node in self.nodes.values():
-      if node not in visited:
-        component = []
-        dfs(node, component)
-        components.append(component)
-
-    return components
-
-  def __str__(self):
-    return str(self.nodes)
+  def __repr__(self):
+      return f"Graph({list(self.nodes.keys())})"
