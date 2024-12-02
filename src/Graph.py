@@ -22,4 +22,7 @@ class Graph:
     node2.add_edge(node1)
 
   def __repr__(self):
-      return f"Graph({list(self.nodes.keys())})"
+    string = ""
+    for node in self.nodes.values():
+      string += f"{node.name}: {node.edges}\n"
+    return string

@@ -36,9 +36,11 @@ def load_graph(filepath: str) -> Graph:
   
   graph = Graph()
   
+  # Add all nodes
   for dance in dance_data:
     graph.add_node(dance, dance_data[dance])
   
+  # Add valid edges
   for dance1 in dance_data:
     for dance2 in dance_data:
       if dance1 != dance2 and not dance_data[dance1].intersection(dance_data[dance2]):

@@ -11,12 +11,9 @@ class Node:
   def remove_edge(self, edge):
     if edge in self.edges:
       self.edges.remove(edge)
-
-  def __str__(self):
-    return self.name
   
   def __repr__(self):
-    return f"Node({self.name})"
+    return self.name
   
   def __eq__(self, other):
     return self.name == other.name

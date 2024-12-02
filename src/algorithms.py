@@ -7,7 +7,7 @@ def dfs(node: Node, visited: Set[Node], component: List[Node]) -> None:
   component.append(node)
   for neighbor in node.edges:
     if neighbor not in visited:
-      dfs(neighbor, component)
+      dfs(neighbor, visited, component)
 
 def find_connected_components(graph: Graph) -> List[List[Node]]:
   visited = set()
