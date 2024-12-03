@@ -2,6 +2,7 @@ from node import Node
 from graph import Graph
 from typing import Set, List, Tuple
 import heapq
+import random
 
 def dfs(node: Node, visited: Set[Node], component: List[Node]) -> None:
   visited.add(node)
@@ -23,13 +24,13 @@ def find_connected_components(graph: Graph) -> List[List[Node]]:
 
   return components
 
-def prim_mst(graph: Graph) -> List[Tuple[Node, Node, float]]:
-  mst_edges = []  # Store the MST edges
-  visited = set()  # Keep track of visited nodes
-  edge_heap = []  # Priority queue for edges (min-heap)
+def prim_mst(graph: Graph, enableRandom = False) -> List[Tuple[Node, Node, float]]:
+  mst_edges = []
+  visited = set()
+  edge_heap = []
 
   # Start with an arbitrary node
-  start_node = next(iter(graph.nodes.values()))
+  start_node = random.choice(list(graph.nodes.values())) if enableRandom else next(iter(graph.nodes.values()))
   visited.add(start_node)
 
   # Add all edges from the start node to the heap

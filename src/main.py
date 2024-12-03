@@ -4,7 +4,7 @@ from heuristics import weight_function
 
 
 def main():
-  filepath = "./data/dances2.csv"
+  filepath = "./data/dance_performances.csv"
   graph = load_graph(filepath, weight_function)
 
   print(graph)
@@ -13,11 +13,10 @@ def main():
   print("Connected Components:", components)
   print("Minimum Back-to-Back Dances:", len(components) - 1)
 
-  if len(components) > 1:
-    # Build MST to connect components
-    mst = prim_mst(graph)
-    print("Minimum Spanning Tree to Connect Components:", mst)
-    print("Total Weight of MST:", sum(weight for _, _, weight in mst))
+  # Build MST to connect components
+  mst = prim_mst(graph, True)
+  print("Minimum Spanning Tree to Connect Components:", mst)
+  print("Total Weight of MST:", sum(weight for _, _, weight in mst))
 
 if __name__ == "__main__":
   main()
