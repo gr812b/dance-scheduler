@@ -42,7 +42,7 @@ def load_graph(filepath: str, weight_fcn: Callable[[Node, Node], float]) -> Grap
   for dance in dance_data:
     graph.add_node(dance, dance_data[dance])
   
-  # Add initial edges with weight 0
+  # Add initial edges with weight
   for dance1 in dance_data:
     for dance2 in dance_data:
       if dance1 != dance2:
@@ -90,14 +90,27 @@ def update_dance_csv(csv_filename, dance_name, dancer_list):
         writer.writerows(rows)
 
 if __name__ == "__main__":
-    csv_file = 'dance_performances.csv'
+    csv_file = 'data/winter_dances2.csv'
 
     # Input data
-    dance_name = "ALTER EGO - Advanced Heels"
+    dance_name = "INT HEELS"
+    genre = "Heels"
     dancer_list_str = """
-Abby Altosaar, Aryana Jebely, Aspen Maciel, Brooke Pocock, Chloe Poulter, Elizabeth Estabrooks, Emily Corturillo, Isabelle Hatzimalis, Jaidyn Smith, Jamie Smith, Jennifer Gibson, Kalia Rivera, Kay Lavery, Kayla Burton, Kealey Parliament, Lauren Conrod, Leshelle Tate, Lexis Vincent, Mariah Gribowski, Marissa Laird, Mikayla Weagle, Natalie Reaume, Noa Mortensen, Priya Sharma, Quiana Fernandes, Sarah Elmugamar, Tiffany Locsin, Tori Reay"""
+      Cassie Howse
+      Caitlin MacInally
+      Vanessa Manrique
+      Phoebe Bernardo
+      Rachana Bharwani
+      Megha Krishna
+      Isabelle Hatzimalis
+      Olivia Saunders
+      Eesha Irfan
+      Shelley Xie
+      Brisseika Beltran
+      Brianna Comeau
+    """
     # Clean and split the dancer list
-    dancer_list = [name.strip() for name in dancer_list_str.strip().split(',')]
+    dancer_list = [name.strip().casefold() for name in dancer_list_str.strip().split('\n')]
 
     # Update the CSV
     update_dance_csv(csv_file, dance_name, dancer_list)
