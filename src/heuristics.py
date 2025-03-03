@@ -3,9 +3,14 @@ from node import Node
 def calculate_overlap(node1: Node, node2: Node):
     return len(node1.dancers & node2.dancers)
 
+def calculate_similar_genre(node1: Node, node2: Node):
+    if node1.genre == node2.genre:
+        return 1
+    return 0
+
 def weight_function(node1: Node, node2: Node):
     # Example weight: minimize overlap
-    return calculate_overlap(node1, node2)
+    return calculate_overlap(node1, node2) + 2*calculate_similar_genre(node1, node2)
 
 # Intructor dance first
 # Feel the beat MUST BE SECOND

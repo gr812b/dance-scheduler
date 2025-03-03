@@ -2,7 +2,7 @@ import csv
 import os
 from graph import Graph
 from node import Node
-from typing import Dict, Set, Callable
+from typing import Dict, Optional, Set, Callable
 
 # CSV input will have a names column on the left for the name of the dance, and then a column for each dancer.
 # ex: name, alice, bob, charlie
@@ -33,25 +33,40 @@ def read_csv(filepath: str) -> Dict[str, Set[str]]:
 
     return dance_data
   
-def load_graph(filepath: str, weight_fcn: Callable[[Node, Node], float]) -> Graph:
-  dance_data = read_csv(filepath)
-  
-  graph = Graph()
-  
-  # Add all nodes
-  for dance in dance_data:
-    graph.add_node(dance, dance_data[dance])
-  
-  # Add initial edges with weight
-  for dance1 in dance_data:
-    for dance2 in dance_data:
-      if dance1 != dance2:
-        weight = weight_fcn(graph.nodes[dance1], graph.nodes[dance2])
-        graph.add_edge(dance1, dance_data[dance1], dance2, dance_data[dance2], weight)
-  
-  return graph
+def load_graph(filepath: str, weight_fcn: Callable[[Node, Node], float],
+               k: Optional[int] = None, threshold: Optional[float] = None) -> Graph:
+    dance_data = read_csv(filepath)
+    graph = Graph()
+    
+    # Add all nodes.
+    for dance in dance_data:
+        graph.add_node(dance, dance_data[dance])
+    
+    # For each dance (node), compute and add only the best edges.
+    for dance1 in dance_data:
+        candidate_edges = []
+        for dance2 in dance_data:
+            if dance1 == dance2:
+                continue
+            weight = weight_fcn(graph.nodes[dance1], graph.nodes[dance2])
+            candidate_edges.append((dance2, weight))
+        
+        # Apply threshold filtering if a threshold is given.
+        if threshold is not None:
+            candidate_edges = [(d, w) for d, w in candidate_edges if w < threshold]
+        
+        # Apply k-nearest filtering if k is given.
+        if k is not None:
+            candidate_edges.sort(key=lambda x: x[1])
+            candidate_edges = candidate_edges[:k]
+        
+        # Add the selected edges for dance1.
+        for dance2, weight in candidate_edges:
+            graph.add_edge(dance1, dance_data[dance1], dance2, dance_data[dance2], weight)
+    
+    return graph
 
-def update_dance_csv(csv_filename, dance_name, dancer_list):
+def update_dance_csv(csv_filename: str, dance_name: str, genre: str, dancer_list: list):
     # Check if the CSV file exists
     if os.path.exists(csv_filename):
         # Read existing data
@@ -62,7 +77,7 @@ def update_dance_csv(csv_filename, dance_name, dancer_list):
             rows = data[1:]
     else:
         # Initialize header and rows
-        header = ['Dance']
+        header = ['Dance', 'Genre']
         rows = []
 
     # Update the list of dancers in the header
@@ -76,6 +91,7 @@ def update_dance_csv(csv_filename, dance_name, dancer_list):
     # Create a new row for the current dance
     new_row = ['0'] * len(header)
     new_row[0] = dance_name  # Set the dance name
+    new_row[1] = genre  # Set the genre
     for dancer in dancer_list:
         index = header.index(dancer)
         new_row[index] = '1'  # Mark dancer as present in this dance
@@ -90,27 +106,41 @@ def update_dance_csv(csv_filename, dance_name, dancer_list):
         writer.writerows(rows)
 
 if __name__ == "__main__":
-    csv_file = 'data/winter_dances2.csv'
+    csv_file = 'data/winter_dances_good.csv'
 
     # Input data
-    dance_name = "INT HEELS"
-    genre = "Heels"
+    dance_name = "INT CONTEMP"
+    genre = "Contemporary"
     dancer_list_str = """
-      Cassie Howse
-      Caitlin MacInally
-      Vanessa Manrique
-      Phoebe Bernardo
-      Rachana Bharwani
-      Megha Krishna
-      Isabelle Hatzimalis
-      Olivia Saunders
-      Eesha Irfan
-      Shelley Xie
-      Brisseika Beltran
-      Brianna Comeau
+Emily Corturillo
+Leshelle Tate
+Abigail Altosaar
+Agassi Iu
+madi parsons
+Heather Booth
+Jamie Smith
+Ava McConnell
+Sami Poulsen
+Kate Craig
+Aryana Jebely
+Kalia Rivera
+Madison McGuire
+Sara Thoeny
+Nikol Pintea
+Aspen Maciel
+Olivia Alvey
+bella verdugo
+Cassy Brown
+Hannah Dietrich
+Jerome EBRARD
+Olivia Furman
+Carlie Stubbert
+Emma Shapland
+Abbey Jean
+Léonie FELDMANN
     """
     # Clean and split the dancer list
     dancer_list = [name.strip().casefold() for name in dancer_list_str.strip().split('\n')]
 
     # Update the CSV
-    update_dance_csv(csv_file, dance_name, dancer_list)
+    update_dance_csv(csv_file, dance_name, genre, dancer_list)

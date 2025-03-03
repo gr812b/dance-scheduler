@@ -5,9 +5,9 @@ class Graph:
   def __init__(self):
     self.nodes: Dict[str, Node] = {}
 
-  def add_node(self, name: str, dancers: set):
+  def add_node(self, name: str, genre: str, dancers: set):
     if name not in self.nodes:
-      self.nodes[name] = Node(name, dancers)
+      self.nodes[name] = Node(name, genre, dancers)
     return self.nodes[name]
 
   def add_edge(self, name1: str, dancers1: set, name2: str, dancers2: set, weight: float):
